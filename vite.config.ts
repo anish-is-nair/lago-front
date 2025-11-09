@@ -83,8 +83,9 @@ export default defineConfig(({ mode }) => {
       port,
     },
     build: {
+      appType: 'spa',            // 👈 ensure it's treated as a single-page app
       outDir: 'dist',
-      emptyOutDir: true, // ✅ ensures clean rebuilds
+      emptyOutDir: true,
       sourcemap: true,
       target: 'esnext',
       rollupOptions: {
