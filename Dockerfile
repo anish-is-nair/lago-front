@@ -21,7 +21,7 @@ COPY . .
 RUN pnpm install --recursive --prefer-offline
 
 # Build project
-RUN pnpm build
+RUN pnpm build && ls -l dist
 
 # Stage 2: Serve via Nginx
 FROM nginx:1.27-alpine
