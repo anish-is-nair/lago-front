@@ -1,3 +1,5 @@
+# rebuild trigger
+
 # Stage 1: Build Lago Front
 FROM node:22-alpine AS build
 
