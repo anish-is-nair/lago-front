@@ -25,8 +25,8 @@ RUN pnpm build && echo "--- DIST CONTENTS ---" && ls -la dist
 
 # ✅ Generate runtime env-config.js (so the frontend has API URLs)
 RUN echo "window.env = {" > ./dist/env-config.js && \
-    echo "  LAGO_API_URL: 'https://lago-production.XXX.railway.app'," >> ./dist/env-config.js && \
-    echo "  NEXT_PUBLIC_API_URL: 'https://lago-production.XXX.railway.app'" >> ./dist/env-config.js && \
+    echo "  LAGO_API_URL: 'https://lago-production.up.railway.app'," >> ./dist/env-config.js && \
+    echo "  NEXT_PUBLIC_API_URL: 'https://lago-production.up.railway.app'" >> ./dist/env-config.js && \
     echo "};" >> ./dist/env-config.js
 
 # Stage 2: Serve via Nginx
