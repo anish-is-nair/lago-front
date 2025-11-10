@@ -1,6 +1,6 @@
 # rebuild trigger
 
-# Stage 1: Build Lago Front
+# --- Stage 1: Build Lago Front ---
 FROM node:22-alpine AS build
 
 WORKDIR /app
@@ -23,25 +23,24 @@ COPY . .
 RUN pnpm install --recursive --prefer-offline
 RUN pnpm build && echo "--- DIST CONTENTS ---" && ls -la dist
 
-# ✅ Generate runtime env-config.js (so the frontend has API URLs)
-RUN echo "window.env = {" > ./dist/env-config.js && \
-    echo "  LAGO_API_URL: 'https://lago-production.up.railway.app'," >> ./dist/env-config.js && \
-    echo "  NEXT_PUBLIC_API_URL: 'https://lago-production.up.railway.app'" >> ./dist/env-config.js && \
-    echo "};" >> ./dist/env-config.js
 
-# Stage 2: Serve via Nginx
+# --- Stage 2: Serve via Nginx ---
 FROM nginx:1.27-alpine
 
 WORKDIR /usr/share/nginx/html
 
-# Install minimal utils
+# Install minimal utilities
 RUN apk add --no-cache bash curl && \
     apk update && apk upgrade libx11 nghttp2 openssl tiff busybox
 
-# Copy built files and config
+# Copy built files and nginx config
 COPY --from=build /app/dist ./
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY ./nginx/gzip.conf /etc/nginx/conf.d/gzip.conf
+
+# ✅ Add a startup script to generate env-config.js dynamically
+COPY ./.env.sh /docker-entrypoint.d/99-generate-env.sh
+RUN chmod +x /docker-entrypoint.d/99-generate-env.sh
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
